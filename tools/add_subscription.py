@@ -8,7 +8,7 @@ from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
 from tools.sheets_helper import get_sheet, ensure_headers
 
-FREQUENCIES = ['weekly', 'monthly', 'quarterly', 'yearly']
+FREQUENCIES = ['weekly', 'monthly', 'quarterly', 'bi-annual', 'yearly']
 
 
 def compute_next_renewal(start: date, frequency: str) -> date:
@@ -21,6 +21,8 @@ def compute_next_renewal(start: date, frequency: str) -> date:
             d += relativedelta(months=1)
         elif frequency == 'quarterly':
             d += relativedelta(months=3)
+        elif frequency == 'bi-annual':
+            d += relativedelta(months=6)
         elif frequency == 'yearly':
             d += relativedelta(years=1)
     return d

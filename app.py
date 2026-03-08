@@ -14,7 +14,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'change-me-in-production')
 
-FREQUENCIES = ['weekly', 'monthly', 'quarterly', 'yearly']
+FREQUENCIES = ['weekly', 'monthly', 'quarterly', 'bi-annual', 'yearly']
 DAYS_AHEAD = 3
 
 
@@ -62,6 +62,8 @@ def advance(d: date, frequency: str) -> date:
         return d + relativedelta(months=1)
     elif frequency == 'quarterly':
         return d + relativedelta(months=3)
+    elif frequency == 'bi-annual':
+        return d + relativedelta(months=6)
     elif frequency == 'yearly':
         return d + relativedelta(years=1)
     raise ValueError(f"Unknown frequency: {frequency}")
@@ -72,6 +74,7 @@ def monthly_equivalent(amount: float, frequency: str) -> float:
         'weekly': amount * 52 / 12,
         'monthly': amount,
         'quarterly': amount / 3,
+        'bi-annual': amount / 6,
         'yearly': amount / 12,
     }[frequency]
 
@@ -93,6 +96,12 @@ def index():
             renewal = None
             days_left = None
 
+        try:
+            start = datetime.strptime(row['Start Date'], '%Y-%m-%d').date()
+            months_subscribed = (today.year - start.year) * 12 + (today.month - start.month)
+        except Exception:
+            months_subscribed = None
+
         subscriptions.append({
             'row': i,
             'name': row['Subscription Name'],
@@ -101,6 +110,7 @@ def index():
             'start_date': row['Start Date'],
             'renewal_date': row['Next Renewal Date'],
             'days_left': days_left,
+            'months_subscribed': months_subscribed,
         })
 
     total_monthly = sum(monthly_equivalent(s['amount'], s['frequency']) for s in subscriptions)

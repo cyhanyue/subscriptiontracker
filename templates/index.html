@@ -67,6 +67,7 @@
             <th class="text-left px-5 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Amount</th>
             <th class="text-left px-5 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Frequency</th>
             <th class="text-left px-5 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Next Renewal</th>
+            <th class="text-left px-5 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide">Duration</th>
             <th class="px-5 py-3"></th>
           </tr>
         </thead>
@@ -92,6 +93,21 @@
                 </span>
               {% else %}
                 <span class="text-gray-400">—</span>
+              {% endif %}
+            </td>
+            <td class="px-5 py-4 text-gray-500 text-sm">
+              {% if sub.months_subscribed is not none %}
+                {% if sub.months_subscribed < 1 %}
+                  &lt; 1 mo
+                {% elif sub.months_subscribed == 1 %}
+                  1 mo
+                {% elif sub.months_subscribed < 12 %}
+                  {{ sub.months_subscribed }} mos
+                {% else %}
+                  {{ sub.months_subscribed // 12 }}y {{ sub.months_subscribed % 12 }}m
+                {% endif %}
+              {% else %}
+                —
               {% endif %}
             </td>
             <td class="px-5 py-4 text-right">
@@ -144,7 +160,7 @@
           <select name="frequency" required
                   class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900">
             {% for f in frequencies %}
-              <option value="{{ f }}">{{ f.capitalize() }}</option>
+              <option value="{{ f }}">{{ f.replace('-', ' ').title() }}</option>
             {% endfor %}
           </select>
         </div>

@@ -25,6 +25,8 @@ def advance(d: date, frequency: str) -> date:
         return d + relativedelta(months=1)
     elif frequency == 'quarterly':
         return d + relativedelta(months=3)
+    elif frequency == 'bi-annual':
+        return d + relativedelta(months=6)
     elif frequency == 'yearly':
         return d + relativedelta(years=1)
     raise ValueError(f"Unknown frequency: {frequency}")
