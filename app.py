@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from apscheduler.schedulers.background import BackgroundScheduler
 from dotenv import load_dotenv
 from tools.sheets_helper import get_sheet, ensure_headers
@@ -16,6 +16,33 @@ app.secret_key = os.getenv('SECRET_KEY', 'change-me-in-production')
 
 FREQUENCIES = ['weekly', 'monthly', 'quarterly', 'yearly']
 DAYS_AHEAD = 3
+
+
+# ── Auth ──────────────────────────────────────────────────────────────────────
+
+@app.before_request
+def require_login():
+    if request.endpoint in ('login', 'static'):
+        return
+    if not session.get('authenticated'):
+        return redirect(url_for('login'))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        if request.form['password'] == os.getenv('SITE_PASSWORD'):
+            session['authenticated'] = True
+            return redirect(url_for('index'))
+        error = 'Incorrect password.'
+    return render_template('login.html', error=error)
+
+
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────

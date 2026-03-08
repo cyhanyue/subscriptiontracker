@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — Subscription Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center px-4">
+
+  <div class="bg-white rounded-2xl border border-gray-200 shadow-sm w-full max-w-sm p-8">
+    <h1 class="text-xl font-semibold text-gray-900 mb-1">Subscription Tracker</h1>
+    <p class="text-sm text-gray-500 mb-6">Enter your password to continue</p>
+
+    {% if error %}
+      <div class="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-4">
+        {{ error }}
+      </div>
+    {% endif %}
+
+    <form method="POST" action="/login">
+      <label class="block text-xs font-medium text-gray-600 mb-1">Password</label>
+      <input type="password" name="password" autofocus required
+             class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm mb-4
+                    focus:outline-none focus:ring-2 focus:ring-gray-900" />
+      <button type="submit"
+              class="w-full bg-gray-900 text-white text-sm font-medium py-2 rounded-lg
+                     hover:bg-gray-700 transition">
+        Sign in
+      </button>
+    </form>
+  </div>
+
+</body>
+</html>
