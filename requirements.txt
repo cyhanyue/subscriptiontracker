@@ -1,0 +1,7 @@
+flask
+gunicorn
+apscheduler
+gspread
+google-auth
+python-dotenv
+python-dateutil
