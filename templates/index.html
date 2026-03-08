@@ -44,6 +44,31 @@
     {% endif %}
   {% endwith %}
 
+  <!-- Upcoming Payments -->
+  <div class="max-w-4xl mx-auto px-6 pt-6">
+    <p class="text-xs font-medium text-gray-500 uppercase tracking-wide mb-3">Next 3 Payments</p>
+    <div class="grid grid-cols-3 gap-4 mb-2">
+      {% for p in upcoming_payments %}
+      <div class="bg-white rounded-xl border {% if p.days_left <= 3 %}border-red-200 bg-red-50{% elif p.days_left <= 7 %}border-amber-200 bg-amber-50{% else %}border-gray-200{% endif %} px-5 py-4">
+        <p class="text-xs {% if p.days_left <= 3 %}text-red-500{% elif p.days_left <= 7 %}text-amber-500{% else %}text-gray-400{% endif %} font-medium mb-1">
+          {% if p.days_left == 0 %}Today
+          {% elif p.days_left == 1 %}Tomorrow
+          {% else %}{{ p.renewal_date }}{% endif %}
+        </p>
+        <p class="font-semibold text-gray-900 truncate">{{ p.name }}</p>
+        <p class="text-xl font-bold {% if p.days_left <= 3 %}text-red-600{% elif p.days_left <= 7 %}text-amber-600{% else %}text-gray-900{% endif %} mt-1">${{ "%.2f"|format(p.amount) }}</p>
+      </div>
+      {% endfor %}
+      {% for _ in range(3 - upcoming_payments|length) %}
+      <div class="bg-white rounded-xl border border-gray-100 px-5 py-4 opacity-40">
+        <p class="text-xs text-gray-300 font-medium mb-1">—</p>
+        <p class="font-semibold text-gray-300">No payment</p>
+        <p class="text-xl font-bold text-gray-200 mt-1">—</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
   <!-- Stats -->
   <div class="max-w-4xl mx-auto px-6 py-6">
     <div class="grid grid-cols-2 gap-4 mb-6">

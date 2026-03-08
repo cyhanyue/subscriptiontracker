@@ -115,9 +115,15 @@ def index():
 
     total_monthly = sum(monthly_equivalent(s['amount'], s['frequency']) for s in subscriptions)
 
+    upcoming_payments = sorted(
+        [s for s in subscriptions if s['days_left'] is not None and s['days_left'] >= 0],
+        key=lambda s: s['days_left']
+    )[:3]
+
     return render_template(
         'index.html',
         subscriptions=subscriptions,
+        upcoming_payments=upcoming_payments,
         total_monthly=total_monthly,
         frequencies=FREQUENCIES,
         today=today.strftime('%Y-%m-%d'),
